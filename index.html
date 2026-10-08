@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipperPRO AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#08080a',
+                        cardbg: 'rgba(24, 24, 27, 0.6)',
+                        cardborder: '#27272a'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #08080a; }
+        ::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+    </style>
+</head>
+<body class="bg-darkbg text-zinc-100 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto flex items-center justify-between border-b border-zinc-800 pb-5 mb-8">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center font-bold text-black shadow-lg shadow-orange-500/20">AI</div>
+            <span class="font-bold text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">CLIPPER<span class="text-orange-500">PRO</span></span>
+        </div>
+        <div class="flex items-center gap-2 bg-zinc-900/80 border border-zinc-800 px-3 py-1.5 rounded-full text-xs text-orange-400">
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Sistem Aktif
+        </div>
+    </div>
+
+    <main class="max-w-6xl mx-auto space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl relative overflow-hidden backdrop-blur-sm">
+                <div class="text-xs text-zinc-400 font-medium">STATUS AI ENGINE</div>
+                <div class="text-xl font-bold text-emerald-400 mt-2" id="stat-status">Siap Memproses</div>
+                <div class="text-xs text-zinc-500 mt-1">Whisper & Gemini Standby</div>
+            </div>
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl backdrop-blur-sm">
+                <div class="text-xs text-zinc-400 font-medium">KLIP DIHASILKAN</div>
+                <div class="text-xl font-bold text-orange-400 mt-2"><span id="stat-count">0</span> Video</div>
+                <div class="text-xs text-zinc-500 mt-1">Tanpa Subtitle (Polos)</div>
+            </div>
+            <div class="bg-cardbg border border-cardborder p-5 rounded-2xl backdrop-blur-sm">
+                <div class="text-xs text-zinc-400 font-medium">FORMAT OUTPUT</div>
+                <div class="text-xl font-bold text-white mt-2">9:16 Vertical</div>
+                <div class="text-xs text-zinc-500 mt-1">Auto Face Tracking Aktif</div>
+            </div>
+        </div>
+
+        <div class="bg-zinc-900/40 border border-zinc-800 p-6 md:p-8 rounded-3xl relative backdrop-blur-md">
+            <div class="text-center max-w-xl mx-auto space-y-3 mb-6">
+                <h2 class="text-2xl font-bold text-white">Upload Video Panjang</h2>
+                <p class="text-zinc-400 text-sm">Pilih file video MP4 kamu. AI kami akan mencari momen terbaik dan memotongnya secara otomatis mengikuti wajah.</p>
+            </div>
+
+            <div class="border-2 border-dashed border-zinc-700/60 hover:border-orange-500/50 transition-all rounded-2xl p-8 text-center bg-zinc-950/50 cursor-pointer" onclick="document.getElementById('file-upload').click()">
+                <input type="file" id="file-upload" accept="video/*" class="hidden" onchange="handleFileSelect(event)">
+                <div class="space-y-3 block">
+                    <div class="w-12 h-12 bg-orange-500/10 text-orange-400 rounded-full flex items-center justify-center mx-auto text-2xl border border-orange-500/20">🎬</div>
+                    <div><span id="file-name" class="text-zinc-300 text-sm font-medium">Klik untuk pilih video (MP4/MOV)</span></div>
+                    <p class="text-xs text-zinc-500">Video diproses lokal secara aman.</p>
+                </div>
+            </div>
+
+            <div id="btn-container" class="mt-6 text-center hidden">
+                <button onclick="startAnalysis()" class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 font-semibold text-black rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-200 text-sm">
+                    🚀 Mulai Analisis AI
+                </button>
+            </div>
+        </div>
+
+        <div id="progress-container" class="hidden bg-zinc-900/80 border border-orange-500/30 p-6 rounded-2xl space-y-4 shadow-xl">
+            <div class="flex items-center justify-between text-sm">
+                <span class="text-orange-400 font-medium flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Proses Analisis Sedang Berjalan...
+                </span>
+                <span class="text-xs text-zinc-500" id="progress-percentage">Loading...</span>
+            </div>
+            <p class="text-xs text-zinc-400 text-center italic" id="progress-text">Proses butuh waktu, harap tunggu...</p>
+        </div>
+
+        <div id="results-section" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">✨ Hasil Potongan Video AI (<span id="result-count-title">0</span>)</h3>
+            </div>
+            <div id="clips-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+        </div>
+    </main>
+
+    <script>
+        let selectedFile = null;
+        let currentVideoId = null;
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                document.getElementById('file-name').innerHTML = `<span class="text-orange-400 font-bold">${file.name}</span>`;
+                document.getElementById('btn-container').classList.remove('hidden');
+            }
+        }
+
+        async function copyToClipboard(text, btnElement) {
+            await navigator.clipboard.writeText(text);
+            const originalText = btnElement.innerText;
+            btnElement.innerText = "Copied!";
+            btnElement.classList.replace("text-orange-400", "text-emerald-400");
+            setTimeout(() => {
+                btnElement.innerText = originalText;
+                btnElement.classList.replace("text-emerald-400", "text-orange-400");
+            }, 2000);
+        }
+
+        async function startAnalysis() {
+            if (!selectedFile) return;
+            document.getElementById('btn-container').classList.add('hidden');
+            document.getElementById('progress-container').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('stat-status').innerText = "Memproses...";
+            document.getElementById('stat-status').classList.replace("text-emerald-400", "text-amber-400");
+            
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            try {
+                const response = await fetch('/api/analyze', { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                document.getElementById('progress-container').classList.add('hidden');
+                renderClips(data.highlights);
+                currentVideoId = data.video_id;
+                document.getElementById('stat-status').innerText = "Siap Memproses";
+                document.getElementById('stat-status').classList.replace("text-amber-400", "text-emerald-400");
+            } catch (error) {
+                alert("Terjadi kesalahan sistem");
+                document.getElementById('progress-container').classList.add('hidden');
+                document.getElementById('btn-container').classList.remove('hidden');
+            }
+        }
+
+        function renderClips(highlights) {
+            const grid = document.getElementById('clips-grid');
+            grid.innerHTML = "";
+            document.getElementById('stat-count').innerText = highlights.length;
+            document.getElementById('result-count-title').innerText = highlights.length;
+            document.getElementById('results-section').classList.remove('hidden');
+
+            highlights.forEach((clip, index) => {
+                const durationSecs = clip.end_seconds - clip.start_seconds;
+                let titlesHtml = "";
+                if(clip.suggested_titles) {
+                    clip.suggested_titles.forEach(title => {
+                        titlesHtml += `
+                            <div class="text-xs text-amber-200/90 bg-amber-500/10 border border-amber-500/20 px-3 py-2 rounded-lg flex items-center justify-between">
+                                <span>${title}</span>
+                                <button onclick="copyToClipboard('${title}', this)" class="text-[10px] text-orange-400 hover:underline ml-2 uppercase font-bold tracking-wider">Copy</button>
+                            </div>
+                        `;
+                    });
+                }
+
+                grid.insertAdjacentHTML('beforeend', `
+                    <div class="bg-cardbg border border-cardborder rounded-2xl p-5 space-y-4 hover:border-zinc-700 transition-all backdrop-blur-sm">
+                        <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+                            <span class="font-bold text-orange-400 text-sm md:text-base">${clip.title}</span>
+                            <span class="text-xs bg-zinc-800 px-2.5 py-1 rounded-md text-zinc-400 border border-zinc-700">⏱️ ${durationSecs} Detik</span>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">Kutipan / Hook</label>
+                            <p class="text-sm text-zinc-200 font-medium italic border-l-2 border-orange-500 pl-3">"${clip.hook_text}"</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-2">Rekomendasi Judul Viral</label>
+                            <div class="space-y-2">${titlesHtml}</div>
+                        </div>
+                        <div class="pt-2">
+                            <button id="btn-render-${index}" onclick="renderVideo('${index}', ${clip.start_seconds}, ${clip.end_seconds})" class="w-full text-center py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-bold rounded-xl text-xs transition-all shadow-md shadow-orange-500/10">
+                                🎬 Tracking Wajah & Render (9:16)
+                            </button>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        async function renderVideo(indexStr, startSec, endSec) {
+            const btn = document.getElementById(`btn-render-${indexStr}`);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `⏳ AI Face Tracking Berjalan...`;
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            try {
+                const response = await fetch('/api/render-clip', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_id: currentVideoId, start_seconds: startSec, end_seconds: endSec })
+                });
+                const data = await response.json();
+                
+                btn.innerHTML = `✅ Video Siap! Klik untuk Download`;
+                btn.classList.replace('from-orange-500', 'from-emerald-500');
+                btn.classList.replace('to-amber-500', 'to-emerald-400');
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                btn.onclick = () => window.open(data.download_url, '_blank');
+            } catch (err) {
+                alert("Gagal merender video");
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+            }
+        }
+    </script>
+</body>
+</html>
