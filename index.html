@@ -33,7 +33,7 @@
             <span class="font-bold text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">CLIPPER<span class="text-orange-500">PRO</span></span>
         </div>
         <div class="flex items-center gap-2 bg-zinc-900/80 border border-zinc-800 px-3 py-1.5 rounded-full text-xs text-orange-400">
-            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Sistem Aktif
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Sistem Aktif (Render Live)
         </div>
     </div>
 
@@ -67,7 +67,7 @@
                 <div class="space-y-3 block">
                     <div class="w-12 h-12 bg-orange-500/10 text-orange-400 rounded-full flex items-center justify-center mx-auto text-2xl border border-orange-500/20">🎬</div>
                     <div><span id="file-name" class="text-zinc-300 text-sm font-medium">Klik untuk pilih video (MP4/MOV)</span></div>
-                    <p class="text-xs text-zinc-500">Video diproses lokal secara aman.</p>
+                    <p class="text-xs text-zinc-500">Maksimal 50MB per video untuk Free Tier.</p>
                 </div>
             </div>
 
@@ -86,7 +86,7 @@
                 </span>
                 <span class="text-xs text-zinc-500" id="progress-percentage">Loading...</span>
             </div>
-            <p class="text-xs text-zinc-400 text-center italic" id="progress-text">Proses butuh waktu, harap tunggu...</p>
+            <p class="text-xs text-zinc-400 text-center italic" id="progress-text">Video sedang dikirim ke Render Server, harap tunggu...</p>
         </div>
 
         <div id="results-section" class="hidden space-y-6">
@@ -98,6 +98,9 @@
     </main>
 
     <script>
+        // --- KONFIGURASI LINK BACKEND RENDER ---
+        const API_URL = "https://clipper-pro-backend.onrender.com";
+
         let selectedFile = null;
         let currentVideoId = null;
 
@@ -133,7 +136,14 @@
             formData.append("file", selectedFile);
 
             try {
-                const response = await fetch('/api/analyze', { method: 'POST', body: formData });
+                // FETCH DIUBAH MENGARAH KE RENDER
+                const response = await fetch(`${API_URL}/api/analyze`, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                
+                if (!response.ok) throw new Error("Gagal memproses video di server.");
+                
                 const data = await response.json();
                 
                 document.getElementById('progress-container').classList.add('hidden');
@@ -142,9 +152,12 @@
                 document.getElementById('stat-status').innerText = "Siap Memproses";
                 document.getElementById('stat-status').classList.replace("text-amber-400", "text-emerald-400");
             } catch (error) {
-                alert("Terjadi kesalahan sistem");
+                console.error(error);
+                alert("Terjadi kesalahan! Pastikan server Render sudah bangun (cek dashboard Render).");
                 document.getElementById('progress-container').classList.add('hidden');
                 document.getElementById('btn-container').classList.remove('hidden');
+                document.getElementById('stat-status').innerText = "Error (Render)";
+                document.getElementById('stat-status').classList.replace("text-amber-400", "text-red-500");
             }
         }
 
@@ -196,16 +209,20 @@
         async function renderVideo(indexStr, startSec, endSec) {
             const btn = document.getElementById(`btn-render-${indexStr}`);
             const originalText = btn.innerHTML;
-            btn.innerHTML = `⏳ AI Face Tracking Berjalan...`;
+            btn.innerHTML = `⏳ Mesin Render Memotong Video...`;
             btn.disabled = true;
             btn.classList.add('opacity-70', 'cursor-not-allowed');
 
             try {
-                const response = await fetch('/api/render-clip', {
+                // FETCH DIUBAH MENGARAH KE RENDER
+                const response = await fetch(`${API_URL}/api/render-clip`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ video_id: currentVideoId, start_seconds: startSec, end_seconds: endSec })
                 });
+                
+                if (!response.ok) throw new Error("Gagal merender di server.");
+                
                 const data = await response.json();
                 
                 btn.innerHTML = `✅ Video Siap! Klik untuk Download`;
@@ -213,9 +230,14 @@
                 btn.classList.replace('to-amber-500', 'to-emerald-400');
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
-                btn.onclick = () => window.open(data.download_url, '_blank');
+                
+                // GABUNGKAN URL API Render DENGAN URL DOWNLOAD (biar gak bentrok localhost)
+                const finalDownloadUrl = API_URL + data.download_url;
+                btn.onclick = () => window.open(finalDownloadUrl, '_blank');
+                
             } catch (err) {
-                alert("Gagal merender video");
+                console.error(err);
+                alert("Server gagal memotong video. Cek log Render di dashboard.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
