@@ -33,7 +33,7 @@
             <span class="font-bold text-xl tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-zinc-400">CLIPPER<span class="text-orange-500">PRO</span></span>
         </div>
         <div class="flex items-center gap-2 bg-zinc-900/80 border border-zinc-800 px-3 py-1.5 rounded-full text-xs text-orange-400">
-            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Sistem Aktif (Render Live)
+            <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> YouTube Engine Aktif
         </div>
     </div>
 
@@ -47,46 +47,43 @@
             <div class="bg-cardbg border border-cardborder p-5 rounded-2xl backdrop-blur-sm">
                 <div class="text-xs text-zinc-400 font-medium">KLIP DIHASILKAN</div>
                 <div class="text-xl font-bold text-orange-400 mt-2"><span id="stat-count">0</span> Video</div>
-                <div class="text-xs text-zinc-500 mt-1">Tanpa Subtitle (Polos)</div>
+                <div class="text-xs text-zinc-500 mt-1">Siap Diunduh</div>
             </div>
             <div class="bg-cardbg border border-cardborder p-5 rounded-2xl backdrop-blur-sm">
-                <div class="text-xs text-zinc-400 font-medium">FORMAT OUTPUT</div>
-                <div class="text-xl font-bold text-white mt-2">9:16 Vertical</div>
-                <div class="text-xs text-zinc-500 mt-1">Auto Face Tracking Aktif</div>
+                <div class="text-xs text-zinc-400 font-medium">SISTEM BYPASS</div>
+                <div class="text-xl font-bold text-white mt-2">No Upload Limit</div>
+                <div class="text-xs text-zinc-500 mt-1">Langsung dari Server YouTube</div>
             </div>
         </div>
 
         <div class="bg-zinc-900/40 border border-zinc-800 p-6 md:p-8 rounded-3xl relative backdrop-blur-md">
-            <div class="text-center max-w-xl mx-auto space-y-3 mb-6">
-                <h2 class="text-2xl font-bold text-white">Upload Video Panjang</h2>
-                <p class="text-zinc-400 text-sm">Pilih file video MP4 kamu. AI kami akan mencari momen terbaik dan memotongnya secara otomatis mengikuti wajah.</p>
+            <div class="text-center max-w-xl mx-auto space-y-3 mb-8">
+                <h2 class="text-2xl font-bold text-white">Masukkan Link YouTube</h2>
+                <p class="text-zinc-400 text-sm">Paste link video YouTube (Podcast, Vlog, dll) yang mau lu potong. AI kami bakal langsung nyedot audionya dan mencari momen viral tanpa perlu upload file.</p>
             </div>
 
-            <div class="border-2 border-dashed border-zinc-700/60 hover:border-orange-500/50 transition-all rounded-2xl p-8 text-center bg-zinc-950/50 cursor-pointer" onclick="document.getElementById('file-upload').click()">
-                <input type="file" id="file-upload" accept="video/*" class="hidden" onchange="handleFileSelect(event)">
-                <div class="space-y-3 block">
-                    <div class="w-12 h-12 bg-orange-500/10 text-orange-400 rounded-full flex items-center justify-center mx-auto text-2xl border border-orange-500/20">🎬</div>
-                    <div><span id="file-name" class="text-zinc-300 text-sm font-medium">Klik untuk pilih video (MP4/MOV)</span></div>
-                    <p class="text-xs text-zinc-500">Maksimal 50MB per video untuk Free Tier.</p>
+            <div class="max-w-2xl mx-auto relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <span class="text-2xl">🔗</span>
                 </div>
+                <input type="text" id="youtube-url" placeholder="Contoh: https://www.youtube.com/watch?v=..." class="w-full bg-zinc-950/80 border-2 border-zinc-700/60 focus:border-orange-500 rounded-xl pl-12 pr-4 py-4 text-white placeholder-zinc-500 outline-none transition-all shadow-inner">
             </div>
 
-            <div id="btn-container" class="mt-6 text-center hidden">
-                <button onclick="startAnalysis()" class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 font-semibold text-black rounded-xl shadow-lg shadow-orange-500/20 transition-all duration-200 text-sm">
-                    🚀 Mulai Analisis AI
+            <div id="btn-container" class="mt-8 text-center">
+                <button onclick="startAnalysis()" class="w-full md:w-auto px-10 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 font-bold text-black rounded-xl shadow-[0_0_20px_rgba(249,115,22,0.3)] transition-all duration-200 text-sm tracking-wide">
+                    🚀 SEDOT & ANALISIS SEKARANG
                 </button>
             </div>
         </div>
 
         <div id="progress-container" class="hidden bg-zinc-900/80 border border-orange-500/30 p-6 rounded-2xl space-y-4 shadow-xl">
             <div class="flex items-center justify-between text-sm">
-                <span class="text-orange-400 font-medium flex items-center gap-2">
-                    <svg class="animate-spin h-4 w-4 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    Proses Analisis Sedang Berjalan...
+                <span class="text-orange-400 font-medium flex items-center gap-3">
+                    <svg class="animate-spin h-5 w-5 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span id="loading-title">Mesin AI Sedang Bekerja...</span>
                 </span>
-                <span class="text-xs text-zinc-500" id="progress-percentage">Loading...</span>
             </div>
-            <p class="text-xs text-zinc-400 text-center italic" id="progress-text">Video sedang dikirim ke Render Server, harap tunggu...</p>
+            <p class="text-xs text-zinc-400 italic border-l-2 border-zinc-700 pl-3" id="progress-text">Menghubungkan ke server YouTube...</p>
         </div>
 
         <div id="results-section" class="hidden space-y-6">
@@ -100,18 +97,7 @@
     <script>
         // --- KONFIGURASI LINK BACKEND RENDER ---
         const API_URL = "https://clipper-pro-backend.onrender.com";
-
-        let selectedFile = null;
-        let currentVideoId = null;
-
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                selectedFile = file;
-                document.getElementById('file-name').innerHTML = `<span class="text-orange-400 font-bold">${file.name}</span>`;
-                document.getElementById('btn-container').classList.remove('hidden');
-            }
-        }
+        let currentVideoUrl = null;
 
         async function copyToClipboard(text, btnElement) {
             await navigator.clipboard.writeText(text);
@@ -125,35 +111,47 @@
         }
 
         async function startAnalysis() {
-            if (!selectedFile) return;
+            const urlInput = document.getElementById('youtube-url').value.trim();
+            
+            // Validasi link YouTube
+            if (!urlInput || (!urlInput.includes('youtube.com') && !urlInput.includes('youtu.be'))) {
+                alert("Woy Bro! Masukin link YouTube yang bener dulu dong!");
+                return;
+            }
+
+            currentVideoUrl = urlInput;
+            
+            // Siapkan UI Loading
             document.getElementById('btn-container').classList.add('hidden');
             document.getElementById('progress-container').classList.remove('hidden');
             document.getElementById('results-section').classList.add('hidden');
-            document.getElementById('stat-status').innerText = "Memproses...";
+            document.getElementById('stat-status').innerText = "Menyedot Audio...";
             document.getElementById('stat-status').classList.replace("text-emerald-400", "text-amber-400");
             
-            const formData = new FormData();
-            formData.append("file", selectedFile);
+            document.getElementById('loading-title').innerText = "Menganalisis Konten YouTube...";
+            document.getElementById('progress-text').innerText = "Render sedang menyedot audio, Groq membuat transkrip, dan Gemini mencari momen viral. Jangan di-close ya bro...";
 
             try {
-                // FETCH DIUBAH MENGARAH KE RENDER
-                const response = await fetch(`${API_URL}/api/analyze`, { 
-                    method: 'POST', 
-                    body: formData 
+                // FETCH DIUBAH MENGARAH KE ENDPOINT YOUTUBE BARU KITA
+                const response = await fetch(`${API_URL}/api/analyze-youtube`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ video_url: currentVideoUrl })
                 });
                 
-                if (!response.ok) throw new Error("Gagal memproses video di server.");
+                if (!response.ok) throw new Error("Gagal diproses oleh Render. Cek koneksi server.");
                 
                 const data = await response.json();
                 
                 document.getElementById('progress-container').classList.add('hidden');
                 renderClips(data.highlights);
-                currentVideoId = data.video_id;
                 document.getElementById('stat-status').innerText = "Siap Memproses";
                 document.getElementById('stat-status').classList.replace("text-amber-400", "text-emerald-400");
+                document.getElementById('btn-container').classList.remove('hidden'); // Munculin tombol lagi buat video berikutnya
+
             } catch (error) {
                 console.error(error);
-                alert("Terjadi kesalahan! Pastikan server Render sudah bangun (cek dashboard Render).");
+                alert("Terjadi kesalahan sistem! Pastikan mesin Render lu lagi bangun.");
                 document.getElementById('progress-container').classList.add('hidden');
                 document.getElementById('btn-container').classList.remove('hidden');
                 document.getElementById('stat-status').innerText = "Error (Render)";
@@ -196,9 +194,9 @@
                             <label class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-2">Rekomendasi Judul Viral</label>
                             <div class="space-y-2">${titlesHtml}</div>
                         </div>
-                        <div class="pt-2">
-                            <button id="btn-render-${index}" onclick="renderVideo('${index}', ${clip.start_seconds}, ${clip.end_seconds})" class="w-full text-center py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-bold rounded-xl text-xs transition-all shadow-md shadow-orange-500/10">
-                                🎬 Tracking Wajah & Render (9:16)
+                        <div class="pt-4">
+                            <button id="btn-render-${index}" onclick="renderVideo('${index}', ${clip.start_seconds}, ${clip.end_seconds})" class="w-full text-center py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-black font-bold rounded-xl text-xs transition-all shadow-md shadow-orange-500/20">
+                                🎬 Potong Langsung dari YouTube (9:16)
                             </button>
                         </div>
                     </div>
@@ -209,16 +207,16 @@
         async function renderVideo(indexStr, startSec, endSec) {
             const btn = document.getElementById(`btn-render-${indexStr}`);
             const originalText = btn.innerHTML;
-            btn.innerHTML = `⏳ Mesin Render Memotong Video...`;
+            btn.innerHTML = `⏳ AI Mengambil Video dari YouTube...`;
             btn.disabled = true;
             btn.classList.add('opacity-70', 'cursor-not-allowed');
 
             try {
-                // FETCH DIUBAH MENGARAH KE RENDER
-                const response = await fetch(`${API_URL}/api/render-clip`, {
+                // FETCH ENDPOINT RENDER YOUTUBE BARU KITA
+                const response = await fetch(`${API_URL}/api/render-youtube-clip`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ video_id: currentVideoId, start_seconds: startSec, end_seconds: endSec })
+                    body: JSON.stringify({ video_url: currentVideoUrl, start_seconds: startSec, end_seconds: endSec })
                 });
                 
                 if (!response.ok) throw new Error("Gagal merender di server.");
@@ -231,13 +229,13 @@
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
                 
-                // GABUNGKAN URL API Render DENGAN URL DOWNLOAD (biar gak bentrok localhost)
+                // Nanti Vercel tinggal narik URL download
                 const finalDownloadUrl = API_URL + data.download_url;
                 btn.onclick = () => window.open(finalDownloadUrl, '_blank');
                 
             } catch (err) {
                 console.error(err);
-                alert("Server gagal memotong video. Cek log Render di dashboard.");
+                alert("Server Render gagal memotong video. Cek log di dashboard Render lu.");
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
